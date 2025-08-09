@@ -1,0 +1,163 @@
+name: quality.yml
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        types:
+            - opened
+            - synchronize
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    rector:
+        name: Rector
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: Rector
+                run: vendor/bin/rector process -n
+
+    psalm:
+        name: Psalm
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: Palm
+                run: vendor/bin/psalm
+
+    codesniffer:
+        name: Codesniffer
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: Codesniffer
+                run: vendor/bin/phpcs
+
+    composer-validate:
+        name: Validate composer.json
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+
+            -   name: Composer validate
+                run: composer validate --strict
+    phpstan:
+        name: PHP Stan
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: PHPStan
+                run: composer stan
+
+    php-cs-fixer:
+        name: PHP-CS-Fixer
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: PHP-CS-Fixer Check
+                run: composer cs
+
+    php-security-check:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+
+            -   name: Download latest local-php-security-checker
+                run: |
+                    LATEST_URL=$(curl -s https://api.github.com/repos/fabpot/local-php-security-checker/releases/latest \
+                      | grep "browser_download_url.*linux_amd64" \
+                      | cut -d '"' -f 4)
+                    wget -O local-php-security-checker "$LATEST_URL"
+                    chmod +x local-php-security-checker
+
+            -   name: Run PHP security check
+                run: ./local-php-security-checker
+
+    phpunit:
+        name: PHP-Unit
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.3"
+                    coverage: none
+
+
+            -   name: Composer install
+                run: composer install
+
+            -   name: PHP Unit
+                run: composer unit
+
