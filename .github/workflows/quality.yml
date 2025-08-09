@@ -102,7 +102,7 @@ jobs:
                 run: composer install
 
             -   name: PHPStan
-                run: composer stan
+                run: vendor/bin/phpstan analyse
 
     php-cs-fixer:
         name: PHP-CS-Fixer
@@ -122,7 +122,7 @@ jobs:
                 run: composer install
 
             -   name: PHP-CS-Fixer Check
-                run: composer cs
+                run: vendor/bin/php-cs-fixer check
 
     php-security-check:
         runs-on: ubuntu-latest
@@ -159,5 +159,5 @@ jobs:
                 run: composer install
 
             -   name: PHP Unit
-                run: composer unit
+                run: vendor/bin/phpunit
 
