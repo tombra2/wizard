@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<ruleset name="akaryon-v1.0" namespace="akaryon\general">
+
+    <description>akaryon custom coding standard</description>
+
+    <file>.</file>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>var/*</exclude-pattern>
+    <exclude-pattern>.ddev/*</exclude-pattern>
+    <exclude-pattern>./migrations/*</exclude-pattern>
+
+
+
+
+    <arg name="extensions" value="php,phtml"/>
+    <arg name="report" value="summary"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <ini name="memory_limit" value="2048M"/>
+
+    <!-- include the default PSR12 ruleset -->
+    <rule ref="PSR12"/>
+
+    <!-- customized rules -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="150"/>
+            <property name="absoluteLineLimit" value="170"/>
+        </properties>
+    </rule>
+
+    <!-- disable rules -->
+    <rule ref="PSR12.Operators.OperatorSpacing.NoSpaceAfter">
+        <severity>0</severity>
+    </rule>
+    <rule ref="PSR12.Operators.OperatorSpacing.NoSpaceBefore">
+        <severity>0</severity>
+    </rule>
+
+
+
+</ruleset>

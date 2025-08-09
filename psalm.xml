@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<psalm
+        findUnusedBaselineEntry="true"
+        findUnusedCode="false"
+        errorLevel="4"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src/Controller"/>
+        <directory name="src/Entity"/>
+        <directory name="src/Repository"/>
+<!--        <directory name="src/Form"/>-->
+<!--        <directory name="src/Service"/>-->
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <plugins>
+        <pluginClass class="Weirdan\DoctrinePsalmPlugin\Plugin"/>
+    </plugins>
+</psalm>

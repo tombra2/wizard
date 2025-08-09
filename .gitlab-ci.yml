@@ -1,0 +1,125 @@
+variables:
+    DOCKER_DRIVER: overlay2
+
+stages:
+    - build
+    - codestyle
+    - test
+    - package
+
+default:
+    image: $CI_REGISTRY_IMAGE/test:8.3
+    cache:
+        paths:
+            - vendor/
+    before_script:
+        - php /composer.phar install
+
+# build job, build the docker image to reuse
+build:docker:
+    image: docker:latest
+    stage: build
+    before_script: []
+    script:
+        - cd tests
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+        - docker build -t $CI_REGISTRY_IMAGE/test:8.3 .
+        - docker push $CI_REGISTRY_IMAGE/test:8.3
+
+# codestyle section
+cs:fixer:
+    stage: codestyle
+    script:
+        - vendor/bin/php-cs-fixer fix --dry-run -vv --diff
+
+cs:rector:
+    stage: codestyle
+    script:
+        - vendor/bin/rector process -n
+
+cs:codesniffer:
+    stage: codestyle
+    script:
+        - vendor/bin/phpcs
+
+cs:psalm:
+    stage: codestyle
+    script:
+        - vendor/bin/psalm
+
+cs:phpstan:
+    stage: codestyle
+    script:
+        - vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format gitlab > phpstan.json
+    artifacts:
+        when: always
+        reports:
+            codequality: phpstan.json
+
+cs:phpstan-plain:
+    stage: codestyle
+    script:
+        - vendor/bin/phpstan analyse --memory-limit=1G
+
+lint:twig:
+    stage: codestyle
+    script:
+        - php bin/console lint:twig templates --show-deprecations
+
+test:php-security:
+    stage: test
+    script:
+        - apt-get -y install wget
+        - wget -N https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64
+        - chmod +x local-php-security-checker_1.0.0_linux_amd64
+        - ./local-php-security-checker_1.0.0_linux_amd64
+
+test:db-schema:
+    stage: test
+    services:
+        - mariadb:11.2.2
+    variables:
+        MYSQL_ROOT_PASSWORD: toor
+    script:
+        - echo -e "\e[0Ksection_start:`date +%s`:section1[collapsed=true]\r\e[0KDatabase setup"
+        - echo "APP_ENV=test" >> .env.local
+        - php bin/console doctrine:database:drop --if-exists --force
+        - php bin/console doctrine:database:create --if-not-exists
+        - php bin/console doctrine:migrations:migrate -n
+        - echo -e "\e[0Ksection_end:`date +%s`:section1\r\e[0K"
+        - php bin/console doctrine:schema:validate
+
+test:phpunit:
+    stage: test
+    services:
+        - mariadb:11.2.2
+    variables:
+        MYSQL_ROOT_PASSWORD: toor
+    script:
+        - echo -e "\e[0Ksection_start:`date +%s`:section1[collapsed=true]\r\e[0KDatabase setup"
+        - echo "APP_ENV=test" >> .env.local
+        - php bin/console doctrine:database:drop --if-exists --force --env=test
+        - php bin/console doctrine:database:create --if-not-exists --env=test
+        - php bin/console doctrine:migrations:migrate -n --env=test
+        - php -d memory_limit=2048M bin/console doctrine:fixtures:load -n --append --env=test
+        - echo -e "\e[0Ksection_end:`date +%s`:section1\r\e[0K"
+
+        - echo -e "\e[0Ksection_start:`date +%s`:section2[collapsed=true]\r\e[0KPHPUnit"
+        - mkdir -p reports/phpunit
+        - php -d memory_limit=2048M -d xdebug.mode=coverage vendor/bin/phpunit \
+          --log-junit reports/phpunit/phpunit.xml \
+          --coverage-cobertura reports/phpunit/phpunit-coverage.xml \
+          --coverage-text | tee reports/phpunit/phpunit-coverage.txt
+        - head -n 10 reports/phpunit/phpunit-coverage.txt
+        - echo -e "\e[0Ksection_end:`date +%s`:section2\r\e[0K"
+    artifacts:
+        when: always
+        reports:
+            junit: reports/phpunit/phpunit.xml
+            coverage_report:
+                coverage_format: cobertura
+                path: reports/phpunit/phpunit-coverage.xml
+        paths:
+            - reports/
+            - var/log/
+    coverage: '/^\s*Lines:\s*\d+.\d+\%/'

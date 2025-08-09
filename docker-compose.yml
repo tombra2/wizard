@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+###> doctrine/doctrine-bundle ###
+  database:
+    image: mariadb:11.2.2
+    environment:
+      MYSQL_ROOT_PASSWORD: akaryon2024
+      MYSQL_DATABASE: intern_timing
+      MYSQL_USER: root
+      MYSQL_PASSWORD: akaryon2024
+    volumes:
+      - /Users/franz/docker/mysql-8/data/:/var/lib/mysql
+      - /Users/franz/docker/mysql-8/conf:/etc/mysql/conf.d
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+###< doctrine/doctrine-bundle ###
+  webserver:
+    build: './docker/php'
+    volumes:
+      - ./:/var/www/html/
+
+  mailer:
+    image: mailhog/mailhog
+
+#volumes:
+###> doctrine/doctrine-bundle ###
+#  database_data:
+###< doctrine/doctrine-bundle ###
