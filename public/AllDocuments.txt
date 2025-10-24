@@ -1,0 +1,6 @@
+INV-001;Rechnung Müller GmbH;2025-02-01;Invoice;1299.99
+INV-002;Rechnung Schmidt AG;2025-03-12;Invoice;842.50
+CON-101;Wartungsvertrag ACME;2024-09-01;Contract;2026-12-31
+CON-102;Liefervertrag Hanssen KG;2023-07-01;Contract;2025-06-30
+REP-202;Jahresbericht 2024;2025-01-15;Report;Sabine Weber
+REP-203;Finanzbericht Q1;2025-04-10;Report;Thomas Berger
