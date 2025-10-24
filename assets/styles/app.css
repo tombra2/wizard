@@ -1,3 +1,22 @@
-body {
-    background-color: skyblue;
+.rating {
+    direction: rtl;
+}
+
+.star {
+    color: #fed900;
+    cursor: pointer;
+    height: 60px;
+    width: 60px;
+}
+
+.star .material-symbols-light {
+    font-variation-settings:
+            'FILL' 0;
+}
+
+
+.star:hover {
+    color: #fed900;
+    height: 60px;
+    width: 60px;
 }

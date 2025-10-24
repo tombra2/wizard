@@ -26,12 +26,9 @@
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="fb032b1f-c474-40bf-a687-b18bc3b11a4d" timeout="30000" />
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="fb032b1f-c474-40bf-a687-b18bc3b11a4d" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="/home/thomas/workspace/github.com/tombra2/wizard/vendor/bin/phpcs" timeout="30000" />
       <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/vendor/bin/phpcbf" tool_path="$PROJECT_DIR$/vendor/bin/phpcs" />
     </phpcs_settings>
-  </component>
-  <component name="PhpExternalFormatter">
-    <option name="externalFormatter" value="PHP_CS_FIXER" />
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
@@ -207,6 +204,7 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-text-template" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-invoker" />
+      <path value="$PROJECT_DIR$/vendor/symfony/ux-icons" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -393,7 +391,7 @@
       </interpreter>
     </phpInfoCache>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
   <component name="PhpStan">
     <PhpStan_settings>
       <PhpStanConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpstan" />
